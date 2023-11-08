@@ -28,7 +28,7 @@ void TRANSFERENCIA(struct BANCO *mover);
 
 int main()
 {
-    int opcion, cliente_pedido, bole = 0;
+    int opcion, cliente_pedido, menu_valido = 0;
     int final;
     char clave[20];
 
@@ -57,8 +57,8 @@ int main()
                         if (strcmp(clientes[i].contrasena, clave) == 0)
                         {
                             pos = i;
-                            bole = 1;
-                            valido = 1;
+                            menu_valido = 1;    // para que muestre el menu cuando la contraseñas y usuarios sean correctos
+                            valido = 1;         // sirve para que no busque mas contraseñas y usuarios
                             i = 9;
                         }
                         else
@@ -73,10 +73,11 @@ int main()
                     }
                     else
                     {
-                        printf("\nESTADO DE CUENTA BLOQUEADO\n");
+                        printf("\nESTADO DE CUENTA BLOQUEADO\nCOMUNIQUESE CON LA ENTIDAD BANCARIA\n");
+                        i = 9; // salteal el else if de abajo
                     }
                 }
-                else if ((i == 9) && (clientes[i].numero_cuenta != cliente_pedido) && (strcmp(clientes[i].contrasena, clave) != 0) && (strcmp(clientes[pos].estado, "ACTIVO") == 0))
+                else if ((i == 9) && (clientes[i].numero_cuenta != cliente_pedido))
                 {
                     printf("\nNumero de cuenta incorrecto.\n");
                 }
@@ -93,7 +94,7 @@ int main()
 
         } while (valido == 0);
 
-        if (bole == 1)
+        if (menu_valido == 1)
         {
             do
             {
@@ -184,14 +185,13 @@ int main()
             printf("\nOPCION: ");
             scanf("%i", &final);
         }
-
         if (final == 1)
         {
             for (i = 0; i < 10; i++)
             {
                 clientes[i].operaciones = 10;
                 clientes[i].intentos = 0;
-                bole = 0;
+                menu_valido = 0;
                 valido = 0;
             }
         }
@@ -242,7 +242,7 @@ void EXTRAER(struct BANCO *extra)
 
 void CONSULTA_SALDO(struct BANCO *consulta)
 {
-    printf("\nSU SALDO ES DE %i\n", consulta[pos].saldo);
+    printf("\nSU SALDO ES DE $%i\n", consulta[pos].saldo);
 }
 
 void TRANSFERENCIA(struct BANCO *mover)
@@ -266,11 +266,12 @@ void TRANSFERENCIA(struct BANCO *mover)
 
             if (cantidad != 0)
             {
-                if (mover[pos].saldo > cantidad)
+                if (mover[pos].saldo >= cantidad)
                 {
                     mover[pos].saldo -= cantidad;
                     mover[lugar].saldo += cantidad;
-                    printf("\n CUENTA 100 = %i", mover[lugar].saldo);
+                    printf("\nTRANSFERENCIA EXITOSA\n");
+                    // printf("\n CUENTA 100 = %i", mover[lugar].saldo);
                 }
                 else
                 {
@@ -312,7 +313,8 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[1].contrasena, "usuario100");
     strcpy(clientes[1].nombre, "Gabriel Sarmiento");
     clientes[1].saldo = 0;
-    strcpy(clientes[1].estado, "BLOQUEADO");
+    // strcpy(clientes[1].estado, "BLOQUEADO");
+    strcpy(clientes[1].estado, "ACTIVO");
     clientes[1].intentos = 0;
     clientes[1].operaciones = 10;
 
