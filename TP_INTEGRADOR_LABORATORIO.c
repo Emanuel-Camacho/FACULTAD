@@ -39,6 +39,7 @@ int main()
     int valido = 0;
     do
     {
+        final = 0;
         do
         {
             printf("\nINGRESE EL NUMERO DE CLIENTE: ");
@@ -57,8 +58,8 @@ int main()
                         if (strcmp(clientes[i].contrasena, clave) == 0)
                         {
                             pos = i;
-                            menu_valido = 1;    // para que muestre el menu cuando la contraseñas y usuarios sean correctos
-                            valido = 1;         // sirve para que no busque mas contraseñas y usuarios
+                            menu_valido = 1; // para que muestre el menu cuando la contraseñas y usuarios sean correctos
+                            valido = 1;      // sirve para que no busque mas contraseñas y usuarios
                             i = 9;
                         }
                         else
@@ -123,9 +124,10 @@ int main()
                     }
                     else
                     {
-                        printf("\nNO TIENE OPERACIONES DISPONIBLES\n");
+                        printf("\nNO TIENE OPERACIONES DISPONIBLES\nHa alcanzado el limite de operaciones. Gracias.\n");
+                        opcion = 6;
+                        final = 1;
                     }
-
                     break;
 
                 case 2:
@@ -143,7 +145,7 @@ int main()
                     }
                     else
                     {
-                        printf("\nNO TIENE OPERACIONES DISPONIBLES\n");
+                        printf("\nNO TIENE OPERACIONES DISPONIBLES\nHa alcanzado el limite de operaciones. Gracias.\n");
                     }
                     break;
 
@@ -156,7 +158,7 @@ int main()
                     }
                     else
                     {
-                        printf("\nNO TIENE OPERACIONES DISPONIBLES\n");
+                        printf("\nNO TIENE OPERACIONES DISPONIBLES\nHa alcanzado el limite de operaciones. Gracias.\n");
                     }
                     break;
 
@@ -172,20 +174,24 @@ int main()
             } while (opcion != 6);
         }
 
-        printf("\nQUIERE INGRESAR OTRA CUENTA?");
-        printf("\n1. SI");
-        printf("\n0. NO");
-        printf("\nOPCION: ");
-        scanf("%i", &final);
-        while (final < 0 || final > 1)
+        if (final == 1)
         {
-            printf("\nVALOR INCORRECTO");
+            printf("\nQUIERE INGRESAR OTRA CUENTA?");
             printf("\n1. SI");
             printf("\n0. NO");
             printf("\nOPCION: ");
             scanf("%i", &final);
+            while (final < 0 || final > 1)
+            {
+                printf("\nVALOR INCORRECTO");
+                printf("\n1. SI");
+                printf("\n0. NO");
+                printf("\nOPCION: ");
+                scanf("%i", &final);
+            }
         }
-        if (final == 1)
+
+        if (final == 1) // REINICIA BOOLEANOS PARA USAR Y LAS OPERACIONES DE TODAS LAS CUENTAS
         {
             for (i = 0; i < 10; i++)
             {
@@ -197,6 +203,8 @@ int main()
         }
 
     } while (final == 1);
+
+    printf("\nCHAU\n");
 
     return 0;
 }
@@ -307,7 +315,7 @@ void CARGA(struct BANCO *clientes)
     clientes[0].saldo = 100000;
     strcpy(clientes[0].estado, "ACTIVO");
     clientes[0].intentos = 0;
-    clientes[0].operaciones = 10;
+    clientes[0].operaciones = 2;
 
     clientes[1].numero_cuenta = 100;
     strcpy(clientes[1].contrasena, "usuario100");
