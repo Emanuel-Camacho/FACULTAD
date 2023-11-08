@@ -51,29 +51,34 @@ int main()
             {
                 if (clientes[i].numero_cuenta == cliente_pedido)
                 {
-                    if (strcmp(clientes[i].contrasena, clave) == 0)
+                    pos = i;
+                    if (strcmp(clientes[i].estado, "ACTIVO") == 0)
                     {
-                        pos = i;
-                        bole = 1;
-                        valido = 1;
-                        i = 9;
+                        if (strcmp(clientes[i].contrasena, clave) == 0)
+                        {
+                            pos = i;
+                            bole = 1;
+                            valido = 1;
+                            i = 9;
+                        }
+                        else
+                        {
+                            if (strcmp(clientes[i].contrasena, clave) != 0)
+                            {
+                                printf("\nClave incorrecta.\n");
+                                i = 9;
+                            }
+                            clientes[i].intentos += 1;
+                        }
                     }
                     else
                     {
-                        if (strcmp(clientes[i].contrasena, clave) != 0)
-                        {
-                            printf("\nClave incorrecta.\n");
-                            i = 9;
-                        }
-                        clientes[i].intentos += 1;
+                        printf("\nESTADO DE CUENTA BLOQUEADO\n");
                     }
                 }
-                else
+                else if ((i == 9) && (clientes[i].numero_cuenta != cliente_pedido) && (strcmp(clientes[i].contrasena, clave) != 0) && (strcmp(clientes[pos].estado, "ACTIVO") == 0))
                 {
-                    if ((i == 9) && (clientes[i].numero_cuenta != cliente_pedido))
-                    {
-                        printf("\nNumero de cuenta incorrecto.\n");
-                    }
+                    printf("\nNumero de cuenta incorrecto.\n");
                 }
 
                 if (clientes[i].intentos >= 3)
@@ -82,6 +87,7 @@ int main()
                     printf("\nNo se permiten mas intentos.\n");
                     printf("\n");
                     valido = 1;
+                    strcpy(clientes[0].estado, "BLOQUEADO");
                 }
             }
 
@@ -306,7 +312,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[1].contrasena, "usuario100");
     strcpy(clientes[1].nombre, "Gabriel Sarmiento");
     clientes[1].saldo = 0;
-    strcpy(clientes[1].estado, "ACTIVO");
+    strcpy(clientes[1].estado, "BLOQUEADO");
     clientes[1].intentos = 0;
     clientes[1].operaciones = 10;
 
