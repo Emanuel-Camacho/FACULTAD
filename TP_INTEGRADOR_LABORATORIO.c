@@ -368,7 +368,7 @@ void OPCION_5(struct BANCO *mirar)
     }
 
     printf("\nOPERACIONES RESTANTES = %i", mirar[pos].operaciones);
-    printf("\nSU SALDO ES DE %i\n", mirar[pos].saldo);
+    printf("\nSU SALDO ES DE $%i\n", mirar[pos].saldo);
 }
 
 void CARGA(struct BANCO *clientes)
