@@ -6,7 +6,13 @@
 #include <time.h>
 #include <string.h>
 
-struct BANCO
+// Emanuel Camacho
+// Felipe Gil
+// Mateo Fux
+// Gaston Vaccarone
+// Sergio Duarte
+
+struct BANCO // estructura principal
 {
     int numero_cuenta;
     char contrasena[20];
@@ -15,16 +21,20 @@ struct BANCO
     char estado[10];
     int intentos;
     int operaciones;
+    int arr_opera[500][2];
+    int mov;
 };
 
-int i, j, k, pos;
+int i, j, k, pos; // variables para for y pos para saber que cliente esta en uso
 
-void CARGA(struct BANCO *clientes);
-void DEPOSITO(struct BANCO *nuevo);
-void EXTRAER(struct BANCO *extra);
-void CONSULTA_SALDO(struct BANCO *consulta);
-void OPCION_5(struct BANCO *mirar);
-void TRANSFERENCIA(struct BANCO *mover);
+void CARGA(struct BANCO *clientes);          // cargamos todos lo clientes
+void DEPOSITO(struct BANCO *nuevo);          // funcion para deposito
+void EXTRAER(struct BANCO *extra);           // funcion para extraccion
+void CONSULTA_SALDO(struct BANCO *consulta); // funcion para consulta de saldo
+void OPCION_5(struct BANCO *mirar);          // funcion para la opcion 5
+void TRANSFERENCIA(struct BANCO *mover);     // funcion para transferencia
+
+// ¿ medio obvio los nombres de las funciones ?
 
 int main()
 {
@@ -35,9 +45,9 @@ int main()
     struct BANCO clientes[10];
 
     CARGA(clientes);
-
     int valido = 0;
-    do
+
+    do // repite el ingreso si se carga un cliente bien y el cliente sale de su cuenta o se le terminan las operaciones
     {
         final = 0;
         do
@@ -66,7 +76,7 @@ int main()
                         {
                             if (strcmp(clientes[i].contrasena, clave) != 0)
                             {
-                                printf("\nClave incorrecta.\n");
+                                printf("\nNumero de cuenta o clave incorrecta.\n"); // por alguna razon no puedo poner la palabra "contraseña", no me escribe la ñ
                                 i = 9;
                             }
                             clientes[i].intentos += 1;
@@ -75,12 +85,12 @@ int main()
                     else
                     {
                         printf("\nESTADO DE CUENTA BLOQUEADO\nCOMUNIQUESE CON LA ENTIDAD BANCARIA\n");
-                        i = 9; // salteal el else if de abajo
+                        i = 9; // salte el else if de abajo, nose porque sino se ejecutan los 2 a la vez "a veces"
                     }
                 }
                 else if ((i == 9) && (clientes[i].numero_cuenta != cliente_pedido))
                 {
-                    printf("\nNumero de cuenta incorrecto.\n");
+                    printf("\nNumero de cuenta o clave incorrecta.\n");
                 }
 
                 if (clientes[i].intentos >= 3)
@@ -95,10 +105,15 @@ int main()
 
         } while (valido == 0);
 
+        // MENU
+
         if (menu_valido == 1)
         {
             do
             {
+                Sleep(1000);
+                printf("\n\nESPERE ...\n\n");
+                Sleep(1500);
                 printf("\nSeleccione una opcion:\n");
                 printf("1. Realizar un Deposito\n");
                 printf("2. Realizar una Extraccion\n");
@@ -124,18 +139,22 @@ int main()
                     }
                     else
                     {
-                        printf("\nNO TIENE OPERACIONES DISPONIBLES\nHa alcanzado el limite de operaciones. Gracias.\n");
+                        printf("\nHa alcanzado el limite de operaciones. Gracias.\n");
                         opcion = 6;
                         final = 1;
                     }
+
                     break;
 
                 case 2:
+
                     if (clientes[pos].operaciones != 0)
                     {
                         if (clientes[pos].saldo == 0)
                         {
                             printf("\nSALDO INSUFICIENTE\n");
+                            opcion = 6;
+                            final = 1;
                         }
                         else
                         {
@@ -145,7 +164,9 @@ int main()
                     }
                     else
                     {
-                        printf("\nNO TIENE OPERACIONES DISPONIBLES\nHa alcanzado el limite de operaciones. Gracias.\n");
+                        printf("\nHa alcanzado el limite de operaciones. Gracias.\n");
+                        opcion = 6;
+                        final = 1;
                     }
                     break;
 
@@ -158,7 +179,9 @@ int main()
                     }
                     else
                     {
-                        printf("\nNO TIENE OPERACIONES DISPONIBLES\nHa alcanzado el limite de operaciones. Gracias.\n");
+                        printf("\nHa alcanzado el limite de operaciones. Gracias.\n");
+                        opcion = 6;
+                        final = 1;
                     }
                     break;
 
@@ -174,7 +197,7 @@ int main()
             } while (opcion != 6);
         }
 
-        if (final == 1)
+        if (final != 1)
         {
             printf("\nQUIERE INGRESAR OTRA CUENTA?");
             printf("\n1. SI");
@@ -191,20 +214,17 @@ int main()
             }
         }
 
-        if (final == 1) // REINICIA BOOLEANOS PARA USAR Y LAS OPERACIONES DE TODAS LAS CUENTAS
+        for (i = 0; i < 10; i++) // REINICIA BOOLEANOS PARA USAR Y LAS OPERACIONES DE TODAS LAS CUENTAS
         {
-            for (i = 0; i < 10; i++)
-            {
-                clientes[i].operaciones = 10;
-                clientes[i].intentos = 0;
-                menu_valido = 0;
-                valido = 0;
-            }
+            clientes[i].operaciones = 10;
+            clientes[i].intentos = 0;
+            menu_valido = 0;
+            valido = 0;
         }
 
     } while (final == 1);
 
-    printf("\nCHAU\n");
+    printf("\nADIOS, QUE TENGA BUEN DIA\n\n");
 
     return 0;
 }
@@ -215,14 +235,25 @@ void DEPOSITO(struct BANCO *depo)
 
     printf("\nINGRESE EL MONTO A DEPOSTAR: ");
     scanf("%i", &monto);
-    while ((monto < 1) || (monto > 50000))
+    while ((monto < 0) || (monto > 50000))
     {
-        printf("\nEL MONTO NO PUEDE SER NEGATIVO O MAYOR A 50.000\nVUELVA A INGRESARLO: ");
+        printf("\nEL MONTO NO PUEDE SER NEGATIVO O MAYOR A 50 MIL\nVUELVA A INGRESARLO: ");
         scanf("%i", &monto);
     }
 
-    printf("\nOPERACION REALIZADA\n");
-    depo[pos].saldo += monto;
+    if (monto == 0)
+    {
+        printf("\nOPERACION CANCELADA\n");
+    }
+    else
+    {
+        printf("\nOPERACION REALIZADA\n");
+        depo[pos].saldo += monto;
+
+        depo[pos].arr_opera[depo[pos].mov][0] = depo[pos].mov + 1;
+        depo[pos].arr_opera[depo[pos].mov][1] = monto;
+        depo[pos].mov++;
+    }
 }
 
 void EXTRAER(struct BANCO *extra)
@@ -231,20 +262,31 @@ void EXTRAER(struct BANCO *extra)
 
     printf("\nINGRESE EL MONTO A EXTRAER: ");
     scanf("%i", &monto);
-    while ((monto < 1) || (monto > 50000))
+    while ((monto < 0) || (monto > 50000))
     {
-        printf("\nEL MONTO NO PUEDE SER NEGATIVO O MAYOR A 50.000\nVUELVA A INGRESARLO: ");
+        printf("\nEL MONTO NO PUEDE SER NEGATIVO O MAYOR A 50 MIL\nVUELVA A INGRESARLO: ");
         scanf("%i", &monto);
     }
 
-    if (extra[pos].saldo > monto)
+    if (monto == 0)
     {
-        printf("\nOPERACION REALIZADA\n");
-        extra[pos].saldo -= monto;
+        printf("\nOPERACION CANCELADA\n");
     }
     else
     {
-        printf("\nSALDO INSUFICIENTE\n");
+        if (extra[pos].saldo > monto)
+        {
+            printf("\nOPERACION REALIZADA\n");
+            extra[pos].saldo -= monto;
+
+            extra[pos].arr_opera[extra[pos].mov][0] = extra[pos].mov + 1;
+            extra[pos].arr_opera[extra[pos].mov][1] = monto * -1;
+            extra[pos].mov++;
+        }
+        else
+        {
+            printf("\nSALDO INSUFICIENTE\n");
+        }
     }
 }
 
@@ -260,49 +302,71 @@ void TRANSFERENCIA(struct BANCO *mover)
     scanf("%i", &numero);
     for (i = 0; i < 10; i++)
     {
-        if (mover[i].numero_cuenta == numero)
+        if (numero != mover[pos].numero_cuenta) // validamos que no transfiera a su propia cuenta
         {
-            lugar = i;
-            i = 9;
-            printf("INGRESE LA CANTIDAD QUE QUIERE TRANSFERIR: ");
-            scanf("%i", &cantidad);
-            while (cantidad < 0)
+            if (mover[i].numero_cuenta == numero)
             {
-                printf("\nLA CANTIDAD NO PUEDE SER MENOR A 0\n");
+                lugar = i; // guarda si se encuentra una cuenta que coincida con el num que dimos
+                i = 9;
+                printf("INGRESE LA CANTIDAD QUE QUIERE TRANSFERIR: ");
                 scanf("%i", &cantidad);
-            }
-
-            if (cantidad != 0)
-            {
-                if (mover[pos].saldo >= cantidad)
+                while (cantidad < 0)
                 {
-                    mover[pos].saldo -= cantidad;
-                    mover[lugar].saldo += cantidad;
-                    printf("\nTRANSFERENCIA EXITOSA\n");
-                    // printf("\n CUENTA 100 = %i", mover[lugar].saldo);
+                    printf("\nLA CANTIDAD NO PUEDE SER MENOR A 0\n");
+                    scanf("%i", &cantidad);
+                }
+
+                if (cantidad != 0)
+                {
+                    if (mover[pos].saldo >= cantidad)
+                    {
+                        mover[pos].saldo -= cantidad;
+                        mover[lugar].saldo += cantidad;
+                        printf("\nTRANSFERENCIA EXITOSA\n");
+
+                        mover[pos].arr_opera[mover[pos].mov][0] = mover[pos].mov + 1;
+                        mover[pos].arr_opera[mover[pos].mov][1] = cantidad * -1;
+                        mover[pos].mov++;
+
+                        // printf("\n CUENTA 100 = %i", mover[lugar].saldo);
+                    }
+                    else
+                    {
+                        printf("\nNO TIENE SALDO SUFICIENTE\n");
+                    }
                 }
                 else
                 {
-                    printf("\nNO TIENE SALDO SUFICIENTE\n");
+                    printf("\nOPERACION CANCELADA\n");
                 }
             }
             else
             {
-                printf("\nOPERACION CANCELADA\n");
+                if ((i == 9) && (mover[9].numero_cuenta != numero))
+                {
+                    printf("\nNO SE ENCONTRO EL NUMERO DE CUENTA\n");
+                }
             }
         }
         else
         {
-            if ((i == 9) && (mover[9].numero_cuenta != numero))
-            {
-                printf("\nNO SE ENCONTRO EL NUMERO DE CUENTA\n");
-            }
+            printf("\nNO PUEDE TRANSFERIR A SU PROPIA CUENTA\n");
+            i = 9;
         }
     }
 }
 
 void OPCION_5(struct BANCO *mirar)
 {
+    if (mirar[pos].mov != 0)
+    {
+        printf("\nOPERACION     MONTO");
+        for (i = 0; i < mirar[pos].mov; i++)
+        {
+            printf("\n    %i         %i", mirar[pos].arr_opera[i][0], mirar[pos].arr_opera[i][1]);
+        }
+    }
+
     printf("\nOPERACIONES RESTANTES = %i", mirar[pos].operaciones);
     printf("\nSU SALDO ES DE %i\n", mirar[pos].saldo);
 }
@@ -316,6 +380,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[0].estado, "ACTIVO");
     clientes[0].intentos = 0;
     clientes[0].operaciones = 2;
+    clientes[0].mov = 0;
 
     clientes[1].numero_cuenta = 100;
     strcpy(clientes[1].contrasena, "usuario100");
@@ -325,6 +390,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[1].estado, "ACTIVO");
     clientes[1].intentos = 0;
     clientes[1].operaciones = 10;
+    clientes[1].mov = 0;
 
     clientes[2].numero_cuenta = 200;
     strcpy(clientes[2].contrasena, "usuario200");
@@ -333,6 +399,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[2].estado, "ACTIVO");
     clientes[2].intentos = 0;
     clientes[2].operaciones = 10;
+    clientes[2].mov = 0;
 
     clientes[3].numero_cuenta = 300;
     strcpy(clientes[3].contrasena, "usuario300");
@@ -341,6 +408,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[3].estado, "ACTIVO");
     clientes[3].intentos = 0;
     clientes[3].operaciones = 10;
+    clientes[3].mov = 0;
 
     clientes[4].numero_cuenta = 400;
     strcpy(clientes[4].contrasena, "usuario400");
@@ -349,6 +417,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[4].estado, "ACTIVO");
     clientes[4].intentos = 0;
     clientes[4].operaciones = 10;
+    clientes[4].mov = 0;
 
     clientes[5].numero_cuenta = 500;
     strcpy(clientes[5].contrasena, "usuario500");
@@ -357,6 +426,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[5].estado, "ACTIVO");
     clientes[5].intentos = 0;
     clientes[5].operaciones = 10;
+    clientes[5].mov = 0;
 
     clientes[6].numero_cuenta = 600;
     strcpy(clientes[6].contrasena, "usuario600");
@@ -365,6 +435,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[6].estado, "ACTIVO");
     clientes[6].intentos = 0;
     clientes[6].operaciones = 10;
+    clientes[6].mov = 0;
 
     clientes[7].numero_cuenta = 700;
     strcpy(clientes[7].contrasena, "usuario700");
@@ -373,6 +444,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[7].estado, "ACTIVO");
     clientes[7].intentos = 0;
     clientes[7].operaciones = 10;
+    clientes[7].mov = 0;
 
     clientes[8].numero_cuenta = 800;
     strcpy(clientes[8].contrasena, "usuario800");
@@ -381,6 +453,7 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[8].estado, "ACTIVO");
     clientes[8].intentos = 0;
     clientes[8].operaciones = 10;
+    clientes[8].mov = 0;
 
     clientes[9].numero_cuenta = 900;
     strcpy(clientes[9].contrasena, "usuario900");
@@ -389,4 +462,5 @@ void CARGA(struct BANCO *clientes)
     strcpy(clientes[9].estado, "ACTIVO");
     clientes[9].intentos = 0;
     clientes[9].operaciones = 10;
+    clientes[9].mov = 0;
 }
