@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> // comparar caracteres
 
 // Emanuel Camacho
 // Felipe Gil
@@ -15,10 +15,11 @@ struct BANCO // estructura principal
     char nombre[50];
     int saldo;
     char estado[10];
-    int intentos;
-    int operaciones;
-    int arr_opera[500][2];
-    int mov;
+
+    int intentos;          // si llega a 3 se bloquea la cuenta
+    int operaciones;       // operaciones restantes, limite de 10
+    int arr_opera[500][2]; // guardamos el numero de operacion y el valor
+    int mov;               // trabaja en conjunto con el de arriba
 };
 
 int i, j, k, pos; // variables para for y pos para saber que cliente esta en uso
@@ -30,23 +31,21 @@ void CONSULTA_SALDO(struct BANCO *consulta); // funcion para consulta de saldo
 void OPCION_5(struct BANCO *mirar);          // funcion para la opcion 5
 void TRANSFERENCIA(struct BANCO *mover);     // funcion para transferencia
 
-// ¿ medio obvio los nombres de las funciones ?
-
 int main()
 {
-    int opcion, cliente_pedido, menu_valido = 0;
-    int final;
-    char clave[20];
+    int opcion, cliente_pedido, menu_valido = 0; // cliente_pedido para el usuario
+    int final;                                   // por si quiere ingresar otro cliente
+    char clave[20];                              // clave de usuario
 
     struct BANCO clientes[10];
 
-    CARGA(clientes);
+    CARGA(clientes); // solo carga todos los clientes
     int valido = 0;
 
     do // repite el ingreso si se carga un cliente bien y el cliente sale de su cuenta o se le terminan las operaciones
     {
         final = 0;
-        do
+        do // valida el usuario y clave
         {
             printf("\nINGRESE EL NUMERO DE CLIENTE: ");
             scanf("%i", &cliente_pedido);
@@ -103,17 +102,17 @@ int main()
 
         // MENU
 
-        if (menu_valido == 1)
+        if (menu_valido == 1) // para que muestre el menu cuando el cliente inicie sesion
         {
-            do
+            do // repite el menu despues de cada operacion
             {
 
                 printf("\nSeleccione una opcion:\n");
                 printf("1. Realizar un Deposito\n");
                 printf("2. Realizar una Extraccion\n");
                 printf("3. Consultar el Saldo de la Cuenta\n");
-                printf("4. Realizar una Transferencia entre Cuentas\n");
-                printf("5. Mostrar cantidad de Operaciones Realizadas y Saldo Actual\n");
+                printf("4. Realizar una Transferencia entre Cuentas\n");                  // no restan operaciones
+                printf("5. Mostrar cantidad de Operaciones Realizadas y Saldo Actual\n"); // no restan operaciones
                 printf("6. Salir de la Sesion\n");
                 printf("Opcion: ");
                 scanf("%d", &opcion);
@@ -244,9 +243,9 @@ void DEPOSITO(struct BANCO *depo)
         printf("\nOPERACION REALIZADA\n");
         depo[pos].saldo += monto;
 
-        depo[pos].arr_opera[depo[pos].mov][0] = depo[pos].mov + 1;
-        depo[pos].arr_opera[depo[pos].mov][1] = monto;
-        depo[pos].mov++;
+        depo[pos].arr_opera[depo[pos].mov][0] = depo[pos].mov + 1; // guardar numero de movimiento
+        depo[pos].arr_opera[depo[pos].mov][1] = monto;             // guardar monto de la operacion
+        depo[pos].mov++;                                           // guarda el numero de mov de CADA CLIENTE
     }
 }
 
@@ -268,7 +267,7 @@ void EXTRAER(struct BANCO *extra)
     }
     else
     {
-        if (extra[pos].saldo > monto)
+        if (extra[pos].saldo > monto) // saldo mayor a extraccion
         {
             printf("\nOPERACION REALIZADA\n");
             extra[pos].saldo -= monto;
@@ -280,6 +279,7 @@ void EXTRAER(struct BANCO *extra)
         else
         {
             printf("\nSALDO INSUFICIENTE\n");
+            extra[pos].operaciones++; // para que no reste operacion si no tiene saldo
         }
     }
 }
@@ -314,13 +314,19 @@ void TRANSFERENCIA(struct BANCO *mover)
                 {
                     if (mover[pos].saldo >= cantidad)
                     {
-                        mover[pos].saldo -= cantidad;
-                        mover[lugar].saldo += cantidad;
+                        mover[pos].saldo -= cantidad;   // en nuestro saldo se quita la cantidad
+                        mover[lugar].saldo += cantidad; // en el saldo del destino se le agrega la cantidad
                         printf("\nTRANSFERENCIA EXITOSA\n");
 
                         mover[pos].arr_opera[mover[pos].mov][0] = mover[pos].mov + 1;
                         mover[pos].arr_opera[mover[pos].mov][1] = cantidad * -1;
                         mover[pos].mov++;
+
+                        // NO LE REGISTRA LA OPERACION AL DESTINATARIO
+
+                        mover[lugar].arr_opera[mover[lugar].mov][0] = mover[lugar].mov + 1;
+                        mover[lugar].arr_opera[mover[lugar].mov][1] = cantidad;
+                        mover[lugar].mov++;
 
                         // printf("\n CUENTA 100 = %i", mover[lugar].saldo);
                     }
@@ -373,7 +379,7 @@ void CARGA(struct BANCO *clientes)
     clientes[0].saldo = 100000;
     strcpy(clientes[0].estado, "ACTIVO");
     clientes[0].intentos = 0;
-    clientes[0].operaciones = 2;
+    clientes[0].operaciones = 10;
     clientes[0].mov = 0;
 
     clientes[1].numero_cuenta = 100;
