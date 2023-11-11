@@ -146,8 +146,6 @@ int main()
                         if (clientes[pos].saldo == 0)
                         {
                             printf("\nSALDO INSUFICIENTE\n");
-                            opcion = 6;
-                            final = 1;
                         }
                         else
                         {
@@ -376,7 +374,7 @@ void CARGA(struct BANCO *clientes)
     clientes[0].numero_cuenta = 999;
     strcpy(clientes[0].contrasena, "999");
     strcpy(clientes[0].nombre, "Alan Wake");
-    clientes[0].saldo = 100000;
+    clientes[0].saldo = 0;
     strcpy(clientes[0].estado, "ACTIVO");
     clientes[0].intentos = 0;
     clientes[0].operaciones = 10;
