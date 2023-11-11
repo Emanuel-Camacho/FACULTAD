@@ -1,9 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
-#include <windows.h>
-#include <time.h>
 #include <string.h>
 
 // Emanuel Camacho
@@ -111,9 +107,7 @@ int main()
         {
             do
             {
-                Sleep(1000);
-                printf("\n\nESPERE ...\n\n");
-                Sleep(1500);
+
                 printf("\nSeleccione una opcion:\n");
                 printf("1. Realizar un Deposito\n");
                 printf("2. Realizar una Extraccion\n");
