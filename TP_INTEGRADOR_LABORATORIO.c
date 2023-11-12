@@ -25,7 +25,7 @@ struct BANCO // estructura principal
 int i, j, k, pos; // variables para for y pos para saber que cliente esta en uso
 
 void CARGA(struct BANCO *clientes);          // cargamos todos lo clientes
-void DEPOSITO(struct BANCO *nuevo);          // funcion para deposito
+void DEPOSITO(struct BANCO *depo);          // funcion para deposito
 void EXTRAER(struct BANCO *extra);           // funcion para extraccion
 void CONSULTA_SALDO(struct BANCO *consulta); // funcion para consulta de saldo
 void OPCION_5(struct BANCO *mirar);          // funcion para la opcion 5
