@@ -94,7 +94,7 @@ int main()
                     printf("\nNo se permiten mas intentos.\n");
                     printf("\n");
                     valido = 1;
-                    strcpy(clientes[0].estado, "BLOQUEADO");
+                    strcpy(clientes[pos].estado, "BLOQUEADO");
                 }
             }
 
