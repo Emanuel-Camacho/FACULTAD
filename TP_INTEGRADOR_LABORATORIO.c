@@ -136,7 +136,6 @@ int main()
                         opcion = 6;
                         final = 1;
                     }
-
                     break;
 
                 case 2:
