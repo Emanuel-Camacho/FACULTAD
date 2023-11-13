@@ -223,7 +223,7 @@ void DEPOSITO(struct BANCO *depo)
 {
     int monto;
 
-    printf("\nINGRESE EL MONTO A DEPOSTAR: ");
+    printf("\nINGRESE EL MONTO A DEPOSITAR: ");
     scanf("%i", &monto);
     while ((monto < 0) || (monto > 50000))
     {
